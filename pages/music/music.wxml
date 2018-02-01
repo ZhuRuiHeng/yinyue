@@ -1,0 +1,91 @@
+<!--pages/music/music.wxml-->
+<view class='container'>
+      <view class='header'>
+          <view class='jifen'>
+              <image src="../image/jifen.png" mode='widthFix'></image>{{point}}
+          </view>
+          <view class='title'>第<text class='yellow'>{{inform.num}}</text>首</view>
+          <view class='music'>
+              <image class='musicStar {{play?"play":"stop"}}' src="{{inform.thumb}}" style='background:url({{inform.thumb}}) no-repeat;background-size: 100%;'></image>
+              <view class='status'>
+                  <image class='play' bindtap='stop' wx:if='{{play}}'  mode="widthFix" src="../image/play.png"></image>
+                  <image class='stop' bindtap='play' wx:else  mode="widthFix" src="../image/stop.png"></image>
+              </view>
+              
+          </view>
+      </view>
+      <view class='list'>
+          <view class='item item1' bindtap='notice'>
+              <image src="../image/tishi.png" mode='widthFix'></image>
+              <view>提示</view>
+          </view>
+          <view class='item item2' bindtap='share'>
+              <image src="../image/share.png" mode='widthFix'></image>
+              <view>分享</view>
+          </view>
+          <button open-type='share' class='item item3' >
+              <image src="../image/help.png" mode='widthFix'></image>
+              <view>求助+{{share_add_point}}</view>
+          </button>
+      </view>
+      <view class='answer'>
+          <view class='answerList'>
+              <view class='answerTitle' wx:for="{{answer}}" wx:key="{{index}}" bindtap='backText'
+                    data-index="{{index}}" data-askindex="{{item.index}}" data-text='{{item.text}}'>
+                      <text class="{{item.text==0?'hide':''}}">{{item.text}}</text>
+              </view>
+              <view class='reset' bindtap='refresh'>
+                  <image class='' src="../image/reset.png" mode='widthFix'></image>
+              </view>
+          </view>
+      </view>
+      <view class='problem'>
+          <view class='problemTitle' wx:for="{{problem}}" wx:key="{{index}}" bindtap='checked'
+                data-index="{{index}}" data-text="{{item}}"><text class="{{item==0?'hide':''}}">{{item}}</text>
+          </view>
+      </view>
+      <view class='adver' bindtap='hepulan'>
+          <image src="http://ovhvevt35.bkt.clouddn.com/hepulan/hpl6.png" mode='aspectFill'></image>
+      </view>
+</view>
+<view class='bg' wx:if="{{bg}}">
+    <!--答对了！  -->
+    <view class='zindex zindex1' wx:if="{{right}}">
+        <view class='queTitle'>答对了！</view>
+        <view class='title'>第<text class='yellow'>1</text>首</view>
+        <view class='daan'>很多事</view>
+        <view class='next' bindtap='nextTitle'>下一题</view>
+        <view class='jifenNow'>
+            <image src="../image/jifen.png" mode='widthFix'></image>+{{answer_add_point}}
+        </view>
+    </view>
+    <!--提示  -->
+    <view class='zindex zindex2' wx:if="{{tishi}}">
+        <view class='title'>是否使用{{notice_use_point}}<image src="../image/jifen.png" mode='widthFix'></image></view>
+        <view class='title'>提示1个正确字？</view>
+        <view class='check'>
+            <view class='one' bindtap='no'>就不</view>
+            <view class='two' bindtap='ok'>好的</view>
+        </view>
+    </view>
+    <view class='adver' bindtap='hepulan'>
+          <image src="http://ovhvevt35.bkt.clouddn.com/hepulan/hpl3.png" mode='aspectFill'></image>
+    </view>
+</view>
+<!--好友提示 wx:if="{{inform.friend_notice.avatarurl}}" -->
+<!-- <view class='friend_notice marquee' >
+     <image src="{{inform.friend_notice.avatarurl}}" mode='widthFix'></image>{{inform.friend_notice.notice}}  
+    <image src="https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIjNvnBqkvMeR1cMYlhbia2bn2lzgLQDQJXwLSPxfEVx7JTRa3LBKoD18Pia5Gc4UkFEWc9nLS829iaA/0" mode='widthFix'></image>演员
+</view> -->
+<view class='marquee'  wx:if="{{inform.friend_notice.avatarurl}}">
+      <view class="content ">
+          <view class='friend_notice'>
+              <image src="{{inform.friend_notice.avatarurl}}" mode='widthFix'></image>{{inform.friend_notice.notice}} 
+          </view> 
+          <view style="display: inline-block; width: 13em;"></view>
+          <view class='friend_notice'>
+              <image src="{{inform.friend_notice.avatarurl}}" mode='widthFix'></image>{{inform.friend_notice.notice}} 
+          </view> 
+          <view style="display: inline-block; width: 13em;"></view>
+      </view>
+</view>
