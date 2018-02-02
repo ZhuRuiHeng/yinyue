@@ -8,6 +8,8 @@ Page({
     second: 3
   },
   onLoad(options){
+    console.log(options);
+    let that = this;
     if (options.scene) {
       let scene = decodeURIComponent(options.scene);
       if (options.scene) {
@@ -15,13 +17,19 @@ Page({
         strs = scene.split("_"); //字符分割 
         console.log(strs);
         console.log("mid:", strs[2]);
+        console.log("num:", strs[2]);
         var mid = strs[2];
         var num = strs[3];
-        wx.setStorageSync(mid, 'strs[2]');
-        wx.setStorageSync(num, 'strs[3]')
-        wx.switchTab({
-          url: '../shareMusic/shareMusic',
+        that.setData({
+          scene: options.scene,
+          mid: mid,
+          num: num
         })
+        wx.setStorageSync('friend_mid', strs[2]);
+        wx.setStorageSync('num', strs[3])
+        // wx.redirectTo({
+        //   url: '../shareMusic/shareMusic?mid=' + strs[2] + '&num=' + strs[3],
+        // })
       }
     }
   },
@@ -29,6 +37,7 @@ Page({
     const that = this;
     let time = that.data.time;
     var second = that.data.second;
+    let scene = that.data.scene;
 
     let extConfig = wx.getExtConfigSync ? wx.getExtConfigSync() : {};
     var id = extConfig.kid;
@@ -54,9 +63,15 @@ Page({
           var inter = setInterval(function () {
             if (second <= 1) {
               clearInterval(inter);
-              wx.reLaunch({
-                url: '../indexs/indexs',
-              })
+              if (scene != "undefined" && scene != "") {
+                wx.redirectTo({
+                  url: '../shareMusic/shareMusic?friend_mid=' + that.data.mid + '&num=' + that.data.num,
+                })
+              }else{
+                  wx.reLaunch({
+                    url: '../indexs/indexs',
+                  })
+              }
             }
             second--;
             console.log(second);
@@ -72,11 +87,19 @@ Page({
 
 
   jumpAd() {
+    let that = this;
     var inter = this.data.inter;
+    let scene = that.data.scene;
     clearInterval(inter);
-    wx.reLaunch({
-      url: '../indexs/indexs',
-    })
+    if (scene != "undefined" && scene != "") {
+      wx.redirectTo({
+        url: '../shareMusic/shareMusic?friend_mid=' + that.data.mid + '&num=' + that.data.num,
+      })
+    } else {
+      wx.reLaunch({
+        url: '../indexs/indexs',
+      })
+    }
   },
 
 

@@ -56,13 +56,13 @@
 					"id": 4,
 					"name": "按钮分享",
 					"pathName": "pages/shareMusic/shareMusic",
-					"query": "mid=14"
+					"query": "mid=173872&num=8"
 				},
 				{
 					"id": 5,
 					"name": "二维码分享",
 					"pathName": "pages/index/index",
-					"query": "scence=music_share_4_1"
+					"query": "scene=music_share_173872_8"
 				}
 			]
 		}

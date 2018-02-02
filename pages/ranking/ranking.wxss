@@ -29,6 +29,7 @@
     border-top: 1px solid #f7f7f7;
     display: flex;
     justify-content: space-between;
+    padding: 10rpx;
 }
 .list .item .left{
   display: flex;
@@ -45,15 +46,15 @@
   margin: 40rpx 10rpx;
 }
 .niceImg image{
-  width: 140rpx;
-  height: 140rpx;
+  width: 120rpx;
+  height: 120rpx;
   border-radius: 50%;
 }
 .inform view{
   margin-left: 10rpx;
-  padding-top: 20rpx;
-  height: 50rpx;
-  line-height: 50rpx;
+  padding-top: 10rpx;
+  height: 40rpx;
+  line-height: 40rpx;
   font-size: 32rpx;
 }
 .jifen{

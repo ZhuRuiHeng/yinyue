@@ -47,7 +47,7 @@ Page({
     var that = this;
     return {
       title: "猜猜音乐",
-      path: '/pages/shareMusic/shareMusic?mid=' + wx.getStorageSync('mid'),
+      path: '/pages/shareMusic/shareMusic?friend_mid=' + wx.getStorageSync('mid') + '&num=' + that.data.inform.num,
       success: function (res) {
         console.log(res);
         // 转发成功

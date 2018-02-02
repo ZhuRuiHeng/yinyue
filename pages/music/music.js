@@ -9,7 +9,8 @@ Page({
      bg: false,
      right:false, //回答正确于否
      tishi:false,
-     click:0
+     click:0,
+     userInfo: wx.getStorageSync('userInfo')
   },
   onLoad: function (options) {
     console.log("options:", options);
@@ -39,9 +40,12 @@ Page({
             if (status == 1) {
               that.setData({
                 inform:res.data.data,
-                problem: res.data.data.option
+                problem: res.data.data.option,
+                _problem: (res.data.data.option).slice(0)
               })
               app.AppMusic.src = res.data.data.url;
+              app.AppMusic.seek(60);
+              app.AppMusic.src = 'http://ovhvevt35.bkt.clouddn.com/photo/%E5%A5%BD%E5%A6%B9%E5%A6%B9%E4%B9%90%E9%98%9F%20-%20%E4%B8%8D%E8%AF%B4%E5%86%8D%E8%A7%81.mp3'
               console.log('AppMusic:',app.AppMusic);
               for (let i = 0; i < res.data.data.length; i++) {
                 both.text=0;
@@ -56,7 +60,11 @@ Page({
                 problem: that.data.inform.option
               })
             } else {
-              console.log(res.data.msg)
+              that.setData({
+                finish:true,
+                bg: true
+              })
+              console.log(res.data.msg);
             }
           }
         })
@@ -102,15 +110,23 @@ Page({
       tishi: false
     })
   },
+  // 更多好玩
+  morePlay(){
+    wx.switchTab({
+      url: '../more/more',
+    })
+  },
   // 提示规则,不是提示的文字全部清掉,保留提示的字符,因为正确的字是唯一的话,若前边又选,提示就没有了
   ok(){
     let that = this;
     let answer = that.data.answer;
     let _answer = that.data.answer.reverse();
     let problem = that.data.problem;
+    let _problem = that.data._problem;
     let point = that.data.point;
     let notice_use_point = that.data.notice_use_point;
     let inform = that.data.inform;
+    let index= '';
     that.setData({
       bg: false,
       tishi: false
@@ -131,38 +147,139 @@ Page({
         if (status == 1) {
           console.log('answer:', answer);
           let notice_key = res.data.data.notice_key;
+          let both = {};
           console.log('notice_key:', res.data.data.notice_key);
           for (let i = 0; i < answer.length; i++) {
-            if (_answer[i].notice == false){
-                console.log(i);
                 answer[i].text = 0;
-            }
+                answer[i].index = -1;
+                answer[i].notice = false;
           }
-          for (let i = 0; i < answer.length; i++) {
+          // 循环提示答案
+         // for (let i = 0; i < answer.length; i++) {
+          console.log('answer:', answer);
+          let length = problem.length;
+          for (let j = 0; j < problem.length; j++) {
+              console.log('problem:', problem[j]);
+              for (let i = 0; i < notice_key.length; i++){
+                if (_problem[j] == notice_key[i]) {
+                    problem[j] = 0;
+                    console.log(j,'j');
+                    console.log(i, 'i');
+                    for (let a = 0; a < answer.length;a++){
+                      
+                    }
+                    // let obj ={
+                    //   text : notice_key[i],
+                    //   index : j,
+                    //   notice : true,
+                    // }
+                    // answer[i] = obj;
+                }
+              }  
+          } 
+          //}
+          if (notice_key.length==answer.length){ //提示全部的
+            that.setData({
+              answer: answer
+            })
+            let huida = [];
+            let answer_add_point = that.data.answer_add_point;
+            for (let i = 0; i < answer.length; i++) {
+              huida.push(answer[i].text)
+            }
+            console.log(1111)
+              // 答题
+              wx.request({
+                url: app.data.apiurl + "guessmc/answer?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
+                data: {
+                  num: that.data.inform.num,
+                  answer: huida.toString(),
+                  type: 'self',
+                  guess_type: 'music'
+                },
+                header: {
+                  'content-type': 'application/json'
+                },
+                method: "GET",
+                success: function (res) {
+                  console.log("回答:", res);
+                  var status = res.data.status;
+                  if (status == 1) {
+                    that.setData({
+                      bg: true,
+                      right: true,
+                      point: point + answer_add_point,
+                      play: true
+                    })
+                    app.AppMusic.play();
+                  } else {
+                    console.log(res.data.msg);
+                    tips.alert(res.data.msg);
+                    for (let i = 0; i < inform.length; i++) {
+                      both.text = 0;
+                      both.index = -1;
+                      answer[i] = both;
+                    }
+                    that.setData({
+                      answer,
+                      click: 0,
+                      problem: _problem
+                    })
+                  }
+                }
+              })
+          }else{
+            console.log('endanswer:', answer);
+            that.setData({
+              answer: answer,//answer.reverse()
+            })
+          }
+          console.log('answer:', answer);
+          that.setData({
+            problem,
+            click: notice_key.length
+          })
+          return;
+          for (let i = 0; i < res.data.data.length; i++) {
+            both.text = 0;
+            both.index = -1;
+            both.notice = false;
+            answer[i] = both;
+          }
+          console.log('objanswer:', answer)
+          that.setData({
+            answer,
+            click: 0,
+            problem: that.data.inform.option
+          })
+
+
+          _answer = _answer;
+          console.log('清楚自己选择的_answer:', _answer);
+          for (let i = 0; i < _answer.length; i++) {
             if (_answer[i].notice == false) {
               console.log(i);
               // 循环选择中与提示文字相同的
               for (let j = 0; j < problem.length;j++){
                 if (problem[j] == notice_key){
                     console.log(j);
-                    let index = j;
+                    index = j;
+                    let obj = {
+                      text: notice_key[0],
+                      index: index,
+                      notice: true
+                    };
+                    _answer[i] = obj;
+                    console.log(i);
                 }
               }
-              let obj = {
-                text: notice_key,
-                index: index,
-                notice: true
-              };
-              answer[i] = obj;
-              console.log(i);
-              
               break;
             }
           }
-          
-          console.log('objanswer:', answer)
+
+          console.log('objanswer:', _answer)
           that.setData({
-            answer: answer,
+            answer: _answer,
             click: 0,
             problem: that.data.inform.option,
             point: point - notice_use_point
@@ -232,7 +349,8 @@ Page({
         if (status == 1) {
           that.setData({
             inform: res.data.data,
-            problem: res.data.data.option
+            problem: res.data.data.option,
+            _problem: res.data.data.option.slice(0)
           })
           for (let i = 0; i < res.data.data.length; i++) {
             both.text = 0;
@@ -243,10 +361,27 @@ Page({
           that.setData({
             answer,
             click:0,
-            problem: that.data.inform.option
+            problem: that.data.inform.option,
+            play:true
           })
           app.AppMusic.src = res.data.data.url;
+          app.AppMusic.seek(60);
+          app.AppMusic.src = 'http://ovhvevt35.bkt.clouddn.com/photo/%E5%A5%BD%E5%A6%B9%E5%A6%B9%E4%B9%90%E9%98%9F%20-%20%E4%B8%8D%E8%AF%B4%E5%86%8D%E8%A7%81.mp3'
+          app.AppMusic.play();
+          setTimeout(function(){
+            app.AppMusic.pause();
+            app.AppMusic.onPause(() => {
+              console.log('暂停播放');
+            })
+            that.setData({
+              play: false
+            })
+          },15000)
         } else {
+          that.setData({
+            finish: true,
+            bg:true
+          })
           console.log(res.data.msg)
         }
       }
@@ -271,7 +406,7 @@ Page({
       play: true
     })
     setTimeout(function(){
-      console.log('setTimeout');
+      console.log('10s');
       app.AppMusic.pause();
       app.AppMusic.onPause(() => {
         console.log('暂停播放');
@@ -322,13 +457,10 @@ Page({
             that.setData({
               bg: true,
               right: true,
-              point: point + answer_add_point
-            })
-            tips.success('积分' + answer_add_point +'');
-            app.AppMusic.play();
-            that.setData({
+              point: point + answer_add_point,
               play: true
             })
+            app.AppMusic.play();  
           } else {
             console.log(res.data.msg);
             tips.alert(res.data.msg);
@@ -348,6 +480,7 @@ Page({
     }
     let both = {};
         click = click+1;
+        console.log("click:", click);
         that.setData({
           click
         })
@@ -462,7 +595,7 @@ Page({
     let that = this;
     return {
       title: '猜猜音乐',
-      path: '/page/shareMusic/shareMusic?mid=' + wx.getStorageSync('mid'),
+      path: '/pages/shareMusic/shareMusic?friend_mid=' + wx.getStorageSync('mid') + '&num=' + that.data.inform.num,
       success: function (res) {
         // 转发成功
         wx.request({

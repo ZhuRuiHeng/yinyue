@@ -32,7 +32,8 @@
           <view class='answerList'>
               <view class='answerTitle' wx:for="{{answer}}" wx:key="{{index}}" bindtap='backText'
                     data-index="{{index}}" data-askindex="{{item.index}}" data-text='{{item.text}}'>
-                      <text class="{{item.text==0?'hide':''}}">{{item.text}}</text>
+                       <text class="{{item.text==0?'hide':''}}">{{item.text}}</text> 
+                      <!-- {{item.text}} -->
               </view>
               <view class='reset' bindtap='refresh'>
                   <image class='' src="../image/reset.png" mode='widthFix'></image>
@@ -53,7 +54,7 @@
     <view class='zindex zindex1' wx:if="{{right}}">
         <view class='queTitle'>答对了！</view>
         <view class='title'>第<text class='yellow'>1</text>首</view>
-        <view class='daan'>很多事</view>
+        <view class='daan'>{{huida}}</view>
         <view class='next' bindtap='nextTitle'>下一题</view>
         <view class='jifenNow'>
             <image src="../image/jifen.png" mode='widthFix'></image>+{{answer_add_point}}
@@ -70,6 +71,14 @@
     </view>
     <view class='adver' bindtap='hepulan'>
           <image src="http://ovhvevt35.bkt.clouddn.com/hepulan/hpl3.png" mode='aspectFill'></image>
+    </view>
+    <!-- 通过完成 -->
+    <view class='zindex zindex1' wx:if="{{finish}}">
+        <view class='queTitle' style='font-size:28rpx;padding-top:26rpx;'>
+        "{{userInfo.nickName}}"恭喜你已完成目前所以关卡,新的关卡正在更新,敬请期待！</view>
+        <view class='check'>
+            <view class='two' bindtap='morePlay'>更多好玩</view>
+        </view>
     </view>
 </view>
 <!--好友提示 wx:if="{{inform.friend_notice.avatarurl}}" -->
