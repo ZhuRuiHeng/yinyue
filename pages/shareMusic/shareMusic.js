@@ -25,10 +25,7 @@ Page({
       })
     }
     
-    that.setData({
-      friend_mid: wx.getStorageSync('friend_mid')
-    })
-    console.log('friend_mid:', options.friend_mid, wx.getStorageSync('friend_mid'), 'num:', options.num);
+    console.log('friend_mid:', options.friend_mid, 'num:', options.num);
     if (options.friend_mid == wx.getStorageSync('mid')) { //自己
     console.log(111111);
       wx.switchTab({
@@ -256,7 +253,8 @@ Page({
           answer: huida.toString(),
           type: 'friend',
           guess_type: 'music',
-          num: that.data.num
+          num: that.data.num,
+          friend_mid: that.data.friend_mid
         },
         header: {
           'content-type': 'application/json'
@@ -272,6 +270,7 @@ Page({
               point: point + answer_add_point,
               play: true
             })
+            app.AppMusic.src = that.data.inform.content;
             app.AppMusic.play();
           } else {
             console.log(res.data.msg);
@@ -345,9 +344,11 @@ Page({
             that.setData({
               bg: true,
               right: true,
-              point: point + answer_add_point
+              play:true
             })
-            tips.alert(res.data.msg);
+            //tips.alert(res.data.msg);
+            app.AppMusic.src = that.data.inform.content;
+            app.AppMusic.play();
             app.AppMusic.onEnded(() => {
               console.log('播放结束事件');
               that.setData({
