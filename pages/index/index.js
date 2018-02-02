@@ -16,13 +16,13 @@ Page({
         var strs = new Array(); //定义一数组 
         strs = scene.split("_"); //字符分割 
         console.log(strs);
-        console.log("mid:", strs[2]);
+        console.log("friend_mid:", strs[2]);
         console.log("num:", strs[2]);
-        var mid = strs[2];
+        var friend_mid = strs[2];
         var num = strs[3];
         that.setData({
           scene: options.scene,
-          mid: mid,
+          friend_mid: friend_mid,
           num: num
         })
         wx.setStorageSync('friend_mid', strs[2]);
@@ -63,9 +63,10 @@ Page({
           var inter = setInterval(function () {
             if (second <= 1) {
               clearInterval(inter);
-              if (scene != "undefined" && scene != "") {
+              if (scene != "undefined" && scene != "" && scene) {
+                console.log('shareMusic',scene);
                 wx.redirectTo({
-                  url: '../shareMusic/shareMusic?friend_mid=' + that.data.mid + '&num=' + that.data.num,
+                  url: '../shareMusic/shareMusic?friend_mid=' + that.data.friend_mid + '&num=' + that.data.num,
                 })
               }else{
                   wx.reLaunch({
@@ -91,9 +92,10 @@ Page({
     var inter = this.data.inter;
     let scene = that.data.scene;
     clearInterval(inter);
-    if (scene != "undefined" && scene != "") {
+    if (scene != "undefined" && scene != "" && scene) {
+      console.log('shareMusic', scene);
       wx.redirectTo({
-        url: '../shareMusic/shareMusic?friend_mid=' + that.data.mid + '&num=' + that.data.num,
+        url: '../shareMusic/shareMusic?friend_mid=' + that.data.friend_mid + '&num=' + that.data.num,
       })
     } else {
       wx.reLaunch({

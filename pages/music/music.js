@@ -10,7 +10,8 @@ Page({
      right:false, //回答正确于否
      tishi:false,
      click:0,
-     userInfo: wx.getStorageSync('userInfo')
+     userInfo: wx.getStorageSync('userInfo'),
+     formNum:0
   },
   onLoad: function (options) {
     console.log("options:", options);
@@ -21,12 +22,14 @@ Page({
     that.setData({
       play: false,
     })
+
     app.getAuth(function () { 
        // 猜歌信息
         wx.request({
           url: app.data.apiurl + "guessmc/go?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
           data:{
             guess_type: 'music',
+            type: 'self',
           },
           header: {
             'content-type': 'application/json'
@@ -37,26 +40,123 @@ Page({
             var status = res.data.status;
             let answer = [];
             let both = {};
+            let notice_key =[];
+            let obj = {};
+            // 积分信息
+            wx.request({
+              url: app.data.apiurl + "guessmc/get-point-info?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
+              data: {
+                guess_type: 'music',
+              },
+              header: {
+                'content-type': 'application/json'
+              },
+              method: "GET",
+              success: function (res) {
+                console.log("积分信息:", res);
+                var status = res.data.status;
+                if (status == 1) {
+                  wx.setStorageSync('jifen', res.data.data);
+                  that.setData({
+                    answer_add_point: res.data.data.answer_add_point,
+                    notice_use_point: res.data.data.notice_use_point,
+                    point: res.data.data.point,
+                    share_add_point: res.data.data.share_add_point
+                  })
+                } else {
+                  console.log(res.data.msg)
+                }
+              }
+            })
             if (status == 1) {
               that.setData({
                 inform:res.data.data,
                 problem: res.data.data.option,
-                _problem: (res.data.data.option).slice(0)
+                _problem: (res.data.data.option).slice(0),
+                notice: res.data.data.notice //提示信息
               })
               app.AppMusic.src = res.data.data.url;
-              app.AppMusic.seek(60);
               app.AppMusic.src = 'http://ovhvevt35.bkt.clouddn.com/photo/%E5%A5%BD%E5%A6%B9%E5%A6%B9%E4%B9%90%E9%98%9F%20-%20%E4%B8%8D%E8%AF%B4%E5%86%8D%E8%A7%81.mp3'
-              console.log('AppMusic:',app.AppMusic);
+              notice_key = res.data.data.notice;
+              // 1
               for (let i = 0; i < res.data.data.length; i++) {
                 both.text=0;
                 both.index=-1;
                 both.notice = false;
                 answer[i]= both;
               }
+              answer = answer;
+              console.log('answer:', answer);
+              // 2
+              for (let i = 0; i < answer.length; i++) {
+                  for (let j = 0; j < res.data.data.notice.length; j++) {
+                    console.log('j:',j)
+                    answer[answer.length - i - 1].text = notice_key[i];
+                    let obj = {
+                      text: notice_key[notice_key.length - i - 1],
+                      index: 1,
+                      notice: true
+                    };
+                    console.log('obj:', obj)
+                    answer[answer.length - i - 1] = obj;
+                    break;
+                  }
+              }
+
+              if (res.data.data.notice.length == answer.length) {
+                let huida = [];
+                let answer_add_point = that.data.answer_add_point;
+                console.log('answer_add_point', answer_add_point);
+                for (let i = 0; i < answer.length; i++) {
+                  huida.push(answer[i].text)
+                }
+                console.log(1111)
+                // 答题
+                wx.request({
+                  url: app.data.apiurl + "guessmc/answer?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
+                  data: {
+                    num: that.data.inform.num,
+                    answer: huida.toString(),
+                    type: 'self',
+                    guess_type: 'music'
+                  },
+                  header: {
+                    'content-type': 'application/json'
+                  },
+                  method: "GET",
+                  success: function (res) {
+                    console.log("回答:", res);
+                    var status = res.data.status;
+                    if (status == 1) {
+                      that.setData({
+                        bg: true,
+                        right: true,
+                        point: that.data.point + answer_add_point,
+                        play: true
+                      })
+                      app.AppMusic.play();
+                    } else {
+                      console.log(res.data.msg);
+                      return;
+                      tips.alert(res.data.msg);
+                      for (let i = 0; i < inform.length; i++) {
+                        both.text = 0;
+                        both.index = -1;
+                        answer[i] = both;
+                      }
+                      that.setData({
+                        answer,
+                        click: 0,
+                        problem: _problem
+                      })
+                    }
+                  }
+                })
+              }
               console.log('objanswer:', answer)
               that.setData({
                 answer,
-                click: 0,
+                click: that.data.notice.length,
                 problem: that.data.inform.option
               })
             } else {
@@ -68,32 +168,7 @@ Page({
             }
           }
         })
-        // 积分信息
-        wx.request({
-          url: app.data.apiurl + "guessmc/get-point-info?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
-          data:{
-            guess_type: 'music',
-          },
-          header: {
-            'content-type': 'application/json'
-          },
-          method: "GET",
-          success: function (res) {
-            console.log("积分信息:", res);
-            var status = res.data.status;
-            if (status == 1) {
-              wx.setStorageSync('jifen', res.data.data);
-              that.setData({
-                answer_add_point: res.data.data.answer_add_point,
-                notice_use_point: res.data.data.notice_use_point,
-                point: res.data.data.point,
-                share_add_point: res.data.data.share_add_point
-              })
-            } else {
-              console.log(res.data.msg)
-            }
-          }
-        })
+       
     });
   },
   // 提示
@@ -127,6 +202,8 @@ Page({
     let notice_use_point = that.data.notice_use_point;
     let inform = that.data.inform;
     let index= '';
+    let obj = {};
+    let _problemIndex = '';
     that.setData({
       bg: false,
       tishi: false
@@ -149,35 +226,6 @@ Page({
           let notice_key = res.data.data.notice_key;
           let both = {};
           console.log('notice_key:', res.data.data.notice_key);
-          for (let i = 0; i < answer.length; i++) {
-                answer[i].text = 0;
-                answer[i].index = -1;
-                answer[i].notice = false;
-          }
-          // 循环提示答案
-         // for (let i = 0; i < answer.length; i++) {
-          console.log('answer:', answer);
-          let length = problem.length;
-          for (let j = 0; j < problem.length; j++) {
-              console.log('problem:', problem[j]);
-              for (let i = 0; i < notice_key.length; i++){
-                if (_problem[j] == notice_key[i]) {
-                    problem[j] = 0;
-                    console.log(j,'j');
-                    console.log(i, 'i');
-                    for (let a = 0; a < answer.length;a++){
-                      
-                    }
-                    // let obj ={
-                    //   text : notice_key[i],
-                    //   index : j,
-                    //   notice : true,
-                    // }
-                    // answer[i] = obj;
-                }
-              }  
-          } 
-          //}
           if (notice_key.length==answer.length){ //提示全部的
             that.setData({
               answer: answer
@@ -229,7 +277,21 @@ Page({
                 }
               })
           }else{
-            console.log('endanswer:', answer);
+            for (let i = 0; i < answer.length; i++) {
+              for (let j = 0; j < notice_key.length; j++) {
+                //console.log('j:', j)
+                answer[answer.length - i - 1].text = notice_key[i];
+                let obj = {
+                  text: notice_key[notice_key.length - i - 1],
+                  index: 1,
+                  notice: true
+                };
+                //console.log('obj:', obj)
+                answer[answer.length - i - 1] = obj;
+                break;
+              }
+            }
+           // console.log('endanswer:', answer);
             that.setData({
               answer: answer,//answer.reverse()
             })
@@ -323,9 +385,9 @@ Page({
   nextTitle(){
     console.log('nextTitle');
     let that = this;
-    app.AppMusic.pause();
-    app.AppMusic.onPause(() => {
-      console.log('暂停播放');
+    app.AppMusic.stop();
+    app.AppMusic.onStop(() => {
+      console.log('停止播放');
     })
     that.setData({
       right:false,
@@ -335,7 +397,8 @@ Page({
     wx.request({
       url: app.data.apiurl + "guessmc/go?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
       data:{
-        guess_type: 'music'
+        guess_type: 'music',
+        type: 'self',
       },
       header: {
         'content-type': 'application/json'
@@ -365,13 +428,14 @@ Page({
             play:true
           })
           app.AppMusic.src = res.data.data.url;
-          app.AppMusic.seek(60);
+          //app.AppMusic.seek(60);
           app.AppMusic.src = 'http://ovhvevt35.bkt.clouddn.com/photo/%E5%A5%BD%E5%A6%B9%E5%A6%B9%E4%B9%90%E9%98%9F%20-%20%E4%B8%8D%E8%AF%B4%E5%86%8D%E8%A7%81.mp3'
           app.AppMusic.play();
           setTimeout(function(){
-            app.AppMusic.pause();
-            app.AppMusic.onPause(() => {
-              console.log('暂停播放');
+            console.log('15s');
+            app.AppMusic.stop();
+            app.AppMusic.onStop(() => {
+              console.log('停止播放');
             })
             that.setData({
               play: false
@@ -406,15 +470,15 @@ Page({
       play: true
     })
     setTimeout(function(){
-      console.log('10s');
-      app.AppMusic.pause();
-      app.AppMusic.onPause(() => {
-        console.log('暂停播放');
+      console.log('15s');
+      app.AppMusic.stop();
+      app.AppMusic.onStop(() => {
+        console.log('停止播放');
       })
       that.setData({
         play: false
       })
-    },10000)
+    },15000)
   },
   // 选择
   checked(e){
@@ -427,6 +491,7 @@ Page({
     let click = that.data.click;
     let point = that.data.point;
     let answer_add_point = that.data.answer_add_point;
+    console.log('text:',text)
     if(text == 0){
         return;
     }
@@ -486,7 +551,7 @@ Page({
         })
         // 答案
         for (let i = 0; i < answer.length; i++) {
-          if (answer[i].text == 0) {
+          if (answer[i].text == 0 || !answer[i].text) {
             let obj = {
               text: text,
               index: index,
@@ -529,12 +594,14 @@ Page({
             console.log("回答:", res);
             var status = res.data.status;
             if (status == 1) {
+              
               that.setData({
                 bg: true,
                 right: true,
                 point: point + answer_add_point
               })
               tips.alert(res.data.msg);
+              app.AppMusic.play();
               app.AppMusic.onEnded(() => {
                 console.log('播放结束事件');
                 that.setData({
@@ -570,6 +637,12 @@ Page({
     let problem = that.data.problem;
     let answer = that.data.answer;
     let click = that.data.click;
+    let notice = e.currentTarget.dataset.notice;
+    if (notice == true && text != 'undefined'){
+      console.log(text);
+      tips.alert('提示的不能移除')
+      return;
+    }
     for (let i = 0; i < problem.length;i++){
       if (i == askindex){
          problem[i] = text
@@ -625,6 +698,30 @@ Page({
         // 转发失败
       }
     }
+  },
+  // 保存formid
+  formSubmit(e){
+    let that = this;
+    let form_id = e.detail.formId;
+    let formNum = that.data.formNum+1;
+    if (formNum>5){
+        return;
+    }
+    wx.request({
+      url:  "https://friend-guess.playonwechat.com/api/save-form?sign=" + wx.getStorageSync('sign') + '&operator_id=' + app.data.kid,
+      data: {
+        form_id: form_id
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      method: "GET",
+      success: function (res) {
+        that.setData({
+          formNum: formNum
+        })
+      }
+    })
   },
   onHide(e){
     console.log('musiconhide');

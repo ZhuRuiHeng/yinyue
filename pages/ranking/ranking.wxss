@@ -1,4 +1,17 @@
 /* pages/ranking/ranking.wxss */
+button:after{
+    content: none;
+}
+button{
+  padding: 0!important;
+  margin: 0!important;
+  line-height: inherit;
+  background-color: #ffffff!important;
+}
+.button-hover{
+  background-color: #ffffff!important;
+  color: inherit;
+}
 .navbar{
   display: flex;
   justify-content: space-around;

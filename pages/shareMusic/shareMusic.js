@@ -16,15 +16,19 @@ Page({
     let that = this;
     if (options.friend_mid){
       that.setData({
-        friend_mid: options.friend_mid, //好友mid
-        num:options.num
+        num: options.num,
+        friend_mid: options.friend_mid //好友mid
+      })
+    }else{
+      wx.switchTab({
+        url: '../music/music',
       })
     }
     
     that.setData({
       friend_mid: wx.getStorageSync('friend_mid')
     })
-    console.log(options.mid, wx.getStorageSync('mid'));
+    console.log('friend_mid:', options.friend_mid, wx.getStorageSync('friend_mid'), 'num:', options.num);
     if (options.friend_mid == wx.getStorageSync('mid')) { //自己
     console.log(111111);
       wx.switchTab({
@@ -37,15 +41,18 @@ Page({
     let that = this;
     that.setData({
       play: false,
+      num: that.data.num,
+      friend_mid: that.data.friend_mid
     })
     app.getAuth(function () {
       // 猜歌信息
       wx.request({
         url: app.data.apiurl + "guessmc/go?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
         data:{
-          guess_type: 'music',
-          mid: that.data.friend_mid,
-          num:that.data.num
+          type:'friend',
+          num: that.data.num,
+          guess_type: 'music'
+          //mid: that.data.friend_mid
         },
         header: {
           'content-type': 'application/json'
@@ -182,10 +189,10 @@ Page({
     })
     //console.log('AppMusic:',app.AppMusic);
     setTimeout(function () {
-        console.log('setTimeout');
-        app.AppMusic.pause();
-        app.AppMusic.onPause(() => {
-          console.log('暂停播放');
+        console.log('15s');
+        app.AppMusic.stop();
+        app.AppMusic.onStop(() => {
+          console.log('停止播放');
         })
         that.setData({
           play: false
@@ -297,8 +304,9 @@ Page({
         data: {
           num: that.data.inform.num,
           answer: huida.toString(),
-          type: 'self',
-          guess_type: 'music'
+          type: 'friend',
+          guess_type: 'music',
+          friend_mid: that.data.friend_mid
         },
         header: {
           'content-type': 'application/json'

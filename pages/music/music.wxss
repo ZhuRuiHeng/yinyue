@@ -1,4 +1,19 @@
 /* pages/music/music.wxss */
+.container {
+  background: #ffffff;
+}
+button:after{
+    content: none;
+}
+button{
+  padding: 0!important;
+  margin: 0!important;
+  line-height: inherit;
+}
+.button-hover{
+  background-color: inherit!important;
+  color: inherit;
+}
 .header{
   background: #8478ff;
   color: #ffffff;
@@ -130,6 +145,11 @@ button:after{
     line-height: 60rpx;
     box-shadow:2px 2px 5px #b9b4fa;
     margin: 10rpx 6rpx;
+}
+.answerTitle text{
+  display: inline-block;
+  width: 34rpx;
+  height: 44rpx;
 }
 .answerList .reset{
   margin-left: 6rpx;

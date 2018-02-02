@@ -26,7 +26,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 4,
 			"list": [
 				{
 					"id": -1,
@@ -56,13 +56,13 @@
 					"id": 4,
 					"name": "按钮分享",
 					"pathName": "pages/shareMusic/shareMusic",
-					"query": "mid=173872&num=8"
+					"query": "friend_mid=174680&num=2"
 				},
 				{
 					"id": 5,
 					"name": "二维码分享",
 					"pathName": "pages/index/index",
-					"query": "scene=music_share_173872_8"
+					"query": "scene=music_share_174680_8"
 				}
 			]
 		}

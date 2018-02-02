@@ -37,7 +37,7 @@
     <!--答对了！  -->
     <view class='zindex zindex1' wx:if="{{right}}">
         <view class='queTitle'>答对了！</view>
-        <view class='title'>第<text class='yellow'>1</text>首</view>
+        <view class='title'>第<text class='yellow'>{{inform.num}}</text>首</view>
         <view class='daan'>很多事</view>
         <view class='thanks'>Thanks朋友!</view>
         <view class='jifenNow'>

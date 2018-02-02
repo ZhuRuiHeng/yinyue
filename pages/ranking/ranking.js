@@ -7,6 +7,7 @@ Page({
   data: {
     type:'friend',
     page: 1,
+    formNum: 0
   },
   onLoad: function (options) {
   
@@ -128,5 +129,28 @@ Page({
       }
     });
   },
-
+  // 保存formid
+  formSubmit(e) {
+    let that = this;
+    let form_id = e.detail.formId;
+    let formNum = that.data.formNum + 1;
+    if (formNum > 3) {
+      return;
+    }
+    wx.request({
+      url: "https://friend-guess.playonwechat.com/api/save-form?sign=" + wx.getStorageSync('sign') + '&operator_id=' + app.data.kid,
+      data: {
+        form_id: form_id
+      },
+      header: {
+        'content-type': 'application/json'
+      },
+      method: "GET",
+      success: function (res) {
+        that.setData({
+          formNum: formNum
+        })
+      }
+    })
+  },
 })
