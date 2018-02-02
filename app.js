@@ -47,7 +47,7 @@ App({
               wx.setStorageSync('openid', openid);
               wx.getUserInfo({
                 success: function (res) {
-                  console.log("照片墙保存信息");
+                  console.log("保存信息");
                   // console.log(res);
                   let userData = {};
                   let userInfo = res.userInfo

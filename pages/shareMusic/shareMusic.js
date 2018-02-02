@@ -63,24 +63,50 @@ Page({
           var status = res.data.status;
           let answer = [];
           let both = {};
+          let notice_key = [];
           if (status == 1) {
             that.setData({
               inform: res.data.data,
-              problem: res.data.data.option
+              problem: res.data.data.option,
+              notice: res.data.data.notice
             })
-            app.AppMusic.src = res.data.data.url;
+            app.AppMusic.src = res.data.data.content;
             console.log('AppMusic:', app.AppMusic);
+            notice_key = res.data.data.notice;
+            // 1
             for (let i = 0; i < res.data.data.length; i++) {
               both.text = 0;
               both.index = -1;
+              both.notice = false;
               answer[i] = both;
             }
-            console.log('objanswer:', answer)
+            answer = answer;
+            console.log('answer:', answer);
             that.setData({
-              answer,
-              click: 0,
-              problem: that.data.inform.option
+                answer
             })
+            // if (res.data.data.notice.length == res.data.data.length){
+            //   for (let i = 0; i < answer.length; i++) {
+            //     for (let j = 0; j < res.data.data.notice.length; j++) {
+            //       console.log('j:', j)
+            //       answer[answer.length - i - 1].text = notice_key[i];
+            //       let obj = {
+            //         text: notice_key[notice_key.length - i - 1],
+            //         index: 1,
+            //         notice: true
+            //       };
+            //       console.log('obj:', obj)
+            //       answer[answer.length - i - 1] = obj;
+            //       break;
+            //     }
+            //   }
+            //   app.AppMusic.play();
+            //   that.setData({
+            //       play:true,
+            //       answer
+            //   })
+            // }
+            
           } else {
             that.setData({
               finish:true,
@@ -358,6 +384,12 @@ Page({
     let problem = that.data.problem;
     let answer = that.data.answer;
     let click = that.data.click;
+    let notice = e.currentTarget.dataset.notice;
+    if (notice == true && text != 'undefined') {
+      console.log(text);
+      tips.alert('提示的不能移除')
+      return;
+    }
     for (let i = 0; i < problem.length; i++) {
       if (i == askindex) {
         problem[i] = text

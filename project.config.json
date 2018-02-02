@@ -56,7 +56,7 @@
 					"id": 4,
 					"name": "按钮分享",
 					"pathName": "pages/shareMusic/shareMusic",
-					"query": "friend_mid=174680&num=2"
+					"query": "friend_mid=174680&num=3"
 				},
 				{
 					"id": 5,

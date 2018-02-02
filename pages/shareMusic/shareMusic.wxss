@@ -159,6 +159,11 @@ button:after{
     box-shadow:2px 2px 5px #b9b4fa;
     margin: 10rpx 6rpx;
 }
+.answerTitle text{
+  display: inline-block;
+  width: 34rpx;
+  height: 44rpx;
+}
 .answerList .reset{
   margin-left: 6rpx;
   padding: 10rpx;

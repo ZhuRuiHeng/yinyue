@@ -87,18 +87,16 @@
     </view>
 </view>
 <!--好友提示 wx:if="{{inform.friend_notice.avatarurl}}" -->
-<!-- <view class='friend_notice marquee' >
-     <image src="{{inform.friend_notice.avatarurl}}" mode='widthFix'></image>{{inform.friend_notice.notice}}  
-    <image src="https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIjNvnBqkvMeR1cMYlhbia2bn2lzgLQDQJXwLSPxfEVx7JTRa3LBKoD18Pia5Gc4UkFEWc9nLS829iaA/0" mode='widthFix'></image>演员
-</view> -->
-<view class='marquee'  wx:if="{{inform.friend_notice.avatarurl}}">
+<view class='marquee'  wx:if="{{inform.friend_notice[0].avatarurl}}">
       <view class="content ">
           <view class='friend_notice'>
-              <image src="{{inform.friend_notice.avatarurl}}" mode='widthFix'></image>{{inform.friend_notice.notice}} 
+              <image src="{{inform.friend_notice[0].avatarurl}}" mode='widthFix'></image>
+              {{inform.friend_notice[0].notice}} 
           </view> 
-          <view style="display: inline-block; width: 13em;"></view>
+          <view style="display: inline-block; width: 16em;"></view>
           <view class='friend_notice'>
-              <image src="{{inform.friend_notice.avatarurl}}" mode='widthFix'></image>{{inform.friend_notice.notice}} 
+              <image src="{{inform.friend_notice[0].avatarurl}}" mode='widthFix'></image>
+              {{inform.friend_notice[0].notice}} 
           </view> 
           <view style="display: inline-block; width: 13em;"></view>
       </view>

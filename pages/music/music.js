@@ -75,8 +75,7 @@ Page({
                 _problem: (res.data.data.option).slice(0),
                 notice: res.data.data.notice //提示信息
               })
-              app.AppMusic.src = res.data.data.url;
-              app.AppMusic.src = 'http://ovhvevt35.bkt.clouddn.com/photo/%E5%A5%BD%E5%A6%B9%E5%A6%B9%E4%B9%90%E9%98%9F%20-%20%E4%B8%8D%E8%AF%B4%E5%86%8D%E8%A7%81.mp3'
+              app.AppMusic.src = res.data.data.content;
               notice_key = res.data.data.notice;
               // 1
               for (let i = 0; i < res.data.data.length; i++) {
@@ -227,8 +226,24 @@ Page({
           let both = {};
           console.log('notice_key:', res.data.data.notice_key);
           if (notice_key.length==answer.length){ //提示全部的
+
+            for (let i = 0; i < answer.length; i++) {
+              for (let j = 0; j < notice_key.length; j++) {
+                //console.log('j:', j)
+                answer[answer.length - i - 1].text = notice_key[i];
+                let obj = {
+                  text: notice_key[notice_key.length - i - 1],
+                  index: 1,
+                  notice: true
+                };
+                //console.log('obj:', obj)
+                answer[answer.length - i - 1] = obj;
+                break;
+              }
+            }
+            // console.log('endanswer:', answer);
             that.setData({
-              answer: answer
+              answer: answer,//answer.reverse()
             })
             let huida = [];
             let answer_add_point = that.data.answer_add_point;
@@ -256,7 +271,7 @@ Page({
                     that.setData({
                       bg: true,
                       right: true,
-                      point: point + answer_add_point,
+                      point: that.data.point + that.data.answer_add_point,
                       play: true
                     })
                     app.AppMusic.play();
@@ -299,7 +314,8 @@ Page({
           console.log('answer:', answer);
           that.setData({
             problem,
-            click: notice_key.length
+            click: notice_key.length,
+            point: that.data.point - that.data.notice_use_point
           })
           return;
           for (let i = 0; i < res.data.data.length; i++) {
@@ -343,8 +359,7 @@ Page({
           that.setData({
             answer: _answer,
             click: 0,
-            problem: that.data.inform.option,
-            point: point - notice_use_point
+            problem: that.data.inform.option
           })
         } else {
           console.log(res.data.msg)
@@ -354,6 +369,7 @@ Page({
   },
   // 分享
   share(e) {
+    wx.setStorageSync('inform', this.data.inform);
     wx.navigateTo({
       url: '../share/share',
     })
@@ -427,9 +443,8 @@ Page({
             problem: that.data.inform.option,
             play:true
           })
-          app.AppMusic.src = res.data.data.url;
+          app.AppMusic.src = res.data.data.content;
           //app.AppMusic.seek(60);
-          app.AppMusic.src = 'http://ovhvevt35.bkt.clouddn.com/photo/%E5%A5%BD%E5%A6%B9%E5%A6%B9%E4%B9%90%E9%98%9F%20-%20%E4%B8%8D%E8%AF%B4%E5%86%8D%E8%A7%81.mp3'
           app.AppMusic.play();
           setTimeout(function(){
             console.log('15s');
@@ -598,9 +613,10 @@ Page({
               that.setData({
                 bg: true,
                 right: true,
-                point: point + answer_add_point
+                play: true,
+                point: that.data.point + that.data.answer_add_point,
               })
-              tips.alert(res.data.msg);
+             // tips.alert(res.data.msg);
               app.AppMusic.play();
               app.AppMusic.onEnded(() => {
                 console.log('播放结束事件');

@@ -69,6 +69,7 @@ button{
   height: 40rpx;
   line-height: 40rpx;
   font-size: 32rpx;
+  text-align: left;
 }
 .jifen{
   color: #828080;

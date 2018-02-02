@@ -14,7 +14,8 @@
       <view class='friends'>请选择答案，助好友通关吧~~</view>
       <view class='answer'>
           <view class='answerList'>
-              <view class='answerTitle' wx:for="{{answer}}" wx:key="{{index}}" bindtap='backText'
+              <view class='answerTitle' wx:for="{{answer}}" wx:key="{{index}}" bindtap='backText' 
+                    data-notice="{{item.notice}}"
                     data-index="{{index}}" data-askindex="{{item.index}}" data-text='{{item.text}}'>
                       <text class="{{item.text==0?'hide':''}}">{{item.text}}</text>
               </view>

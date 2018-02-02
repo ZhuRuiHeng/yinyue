@@ -8,12 +8,13 @@ Page({
     imgUrl: wx.getStorageSync('imgUrl')
   },
   onLoad: function (options) {
-  
+     
   },
   onShow: function () {
     let that = this;
     that.setData({
-      imgUrl: wx.getStorageSync('imgUrl')
+      imgUrl: wx.getStorageSync('imgUrl'),
+      inform: wx.getStorageSync('inform')
     })
     wx.request({
       url: app.data.apiurl + "guessmc/share?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
@@ -43,17 +44,16 @@ Page({
       url: '../music/music',
     })
   },
-  onShareAppMessage: function (){
-    var that = this;
+  onShareAppMessage: function (res) {
+    let that = this;
     return {
-      title: "猜猜音乐",
+      title: '猜猜音乐',
       path: '/pages/shareMusic/shareMusic?friend_mid=' + wx.getStorageSync('mid') + '&num=' + that.data.inform.num,
       success: function (res) {
-        console.log(res);
         // 转发成功
         wx.request({
           url: app.data.apiurl + "guessmc/share-add-point?sign=" + wx.getStorageSync('sign') + '&operator_id=' + wx.getStorageSync("kid"),
-          data:{
+          data: {
             guess_type: 'music'
           },
           header: {
@@ -64,7 +64,7 @@ Page({
             console.log("求助加积分:", res);
             var status = res.data.status;
             if (status == 1) {
-              tips.success('积分' + wx.getStorageSync('jifen').share_add_point+'')
+              tips.success('积分' + wx.getStorageSync('jifen').share_add_point + '')
               that.setData({
                 point: res.data.data.point,
               })
@@ -75,7 +75,6 @@ Page({
         })
       },
       fail: function (res) {
-        console.log(res);
         // 转发失败
       }
     }
