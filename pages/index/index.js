@@ -86,7 +86,6 @@ Page({
     })
   },
 
-
   jumpAd() {
     let that = this;
     var inter = this.data.inter;
@@ -103,7 +102,4 @@ Page({
       })
     }
   },
-
-
-  
 })

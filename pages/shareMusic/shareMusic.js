@@ -386,7 +386,10 @@ Page({
     let answer = that.data.answer;
     let click = that.data.click;
     let notice = e.currentTarget.dataset.notice;
-    if (notice == true && text != 'undefined') {
+    if (text == 'undefined' || text == undefined) {
+      return;
+    }
+    if (notice == true && text != 'undefined' && text!= undefined) {
       console.log(text);
       tips.alert('提示的不能移除')
       return;

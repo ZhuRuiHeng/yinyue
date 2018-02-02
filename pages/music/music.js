@@ -39,6 +39,7 @@ Page({
             console.log("猜歌信息:", res);
             var status = res.data.status;
             let answer = [];
+            let problem = [];
             let both = {};
             let notice_key =[];
             let obj = {};
@@ -654,7 +655,11 @@ Page({
     let answer = that.data.answer;
     let click = that.data.click;
     let notice = e.currentTarget.dataset.notice;
-    if (notice == true && text != 'undefined'){
+    console.log('text',text);
+    if (text == 'undefined' || text == undefined){
+      return;
+    }
+    if (notice == true && text != 'undefined' && text != undefined){
       console.log(text);
       tips.alert('提示的不能移除')
       return;
@@ -734,7 +739,7 @@ Page({
       method: "GET",
       success: function (res) {
         that.setData({
-          formNum: formNum
+          formNum: formNum  
         })
       }
     })
